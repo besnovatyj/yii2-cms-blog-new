@@ -43,37 +43,6 @@ class Category extends ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function rules(): array
-    {
-        return [
-            [['title'], 'required'],
-            [['title', 'slug'], 'string', 'max' => 255],
-            [['sort_order'], 'integer'],
-            [['is_active'], 'boolean'],
-            [['sort_order'], 'default', 'value' => 0],
-            [['is_active'], 'default', 'value' => true],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels(): array
-    {
-        return [
-            'id'         => 'ID',
-            'title'      => 'Название',
-            'slug'       => 'URL-слаг',
-            'sort_order' => 'Порядок сортировки',
-            'is_active'  => 'Активна',
-            'created_at' => 'Создана',
-            'updated_at' => 'Обновлена',
-        ];
-    }
-
-    /**
      * Связь с постами.
      */
     public function getPosts(): ActiveQuery

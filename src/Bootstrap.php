@@ -41,11 +41,17 @@ class Bootstrap implements BootstrapInterface
             'blog/category/<slug:\w+>'    => 'blog/post/category',
             'blog/<slug:[\w-]+>'          => 'blog/post/view',
 
-            // Бэкенд: стандартные CRUD-маршруты для админки
+            // Бэкенд: CRUD-маршруты для постов
             'blog/manage'                 => 'blog/post/index',
             'blog/manage/create'          => 'blog/post/create',
             'blog/manage/<id:\d+>/update' => 'blog/post/update',
             'blog/manage/<id:\d+>/delete' => 'blog/post/delete',
+
+            // Бэкенд: CRUD-маршруты для категорий
+            'blog/manage/categories'                 => 'blog/category/index',
+            'blog/manage/categories/create'          => 'blog/category/create',
+            'blog/manage/categories/<id:\d+>/update' => 'blog/category/update',
+            'blog/manage/categories/<id:\d+>/delete' => 'blog/category/delete',
         ], false);
     }
 }

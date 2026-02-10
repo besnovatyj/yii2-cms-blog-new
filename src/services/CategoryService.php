@@ -62,12 +62,6 @@ class CategoryService extends Component implements CategoryServiceInterface
         $category->sort_order = $dto->sortOrder;
         $category->is_active  = $dto->isActive;
 
-        if (!$category->validate()) {
-            throw new \RuntimeException(
-                'Ошибка валидации категории: ' . implode(', ', $category->getFirstErrors())
-            );
-        }
-
         $this->categoryRepository->save($category);
 
         return $category;
@@ -84,12 +78,6 @@ class CategoryService extends Component implements CategoryServiceInterface
         $category->slug       = $dto->slug ?? Inflector::slug($dto->title);
         $category->sort_order = $dto->sortOrder;
         $category->is_active  = $dto->isActive;
-
-        if (!$category->validate()) {
-            throw new \RuntimeException(
-                'Ошибка валидации категории: ' . implode(', ', $category->getFirstErrors())
-            );
-        }
 
         $this->categoryRepository->save($category);
 
