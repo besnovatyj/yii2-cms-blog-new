@@ -15,6 +15,7 @@ use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
 use Besnovatyj\BlogNew\exceptions\BlogModuleException;
 use Besnovatyj\BlogNew\exceptions\PostNotFoundException;
 use Besnovatyj\BlogNew\forms\backend\PostForm;
+use Besnovatyj\BlogNew\forms\backend\search\PostSearch;
 
 /**
  * Бэкенд-контроллер для управления постами (админка).
@@ -88,17 +89,18 @@ class PostController extends Controller
     /**
      * Список постов в админке.
      *
-     * Контроллер просто берёт фильтры из GET-параметров и передаёт в сервис.
-     * Никакого построения запросов, никакой фильтрации — всё в сервисе → репозитории.
+     * PostSearch — специализированная форма фильтрации для GridView.
+     * Она сама строит запрос с фильтрами и возвращает ActiveDataProvider.
      */
     public function actionIndex(): string
     {
-        $filters = Yii::$app->request->get('filter', []);
-        $dataProvider = $this->postService->getAdminList($filters);
+        $searchModel = new PostSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'categories'   => $this->categoryService->getActiveList(),
+            'searchModel'  => $searchModel,
+            'dataProvider'  => $dataProvider,
+            'categories'    => $this->categoryService->getActiveList(),
         ]);
     }
 

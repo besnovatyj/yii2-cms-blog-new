@@ -4,11 +4,13 @@
  * Список постов в админке.
  *
  * @var \yii\web\View $this
+ * @var \Besnovatyj\BlogNew\forms\backend\search\PostSearch $searchModel
  * @var \yii\data\ActiveDataProvider $dataProvider
  * @var \Besnovatyj\BlogNew\models\Category[] $categories
  */
 
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use Besnovatyj\BlogNew\helpers\PostHelper;
 use Besnovatyj\BlogNew\models\Post;
@@ -23,17 +25,20 @@ $this->title = 'Управление постами';
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             'id',
             'title',
             [
                 'attribute' => 'category_id',
                 'value' => fn(Post $model) => $model->category->title ?? '—',
+                'filter' => ArrayHelper::map($categories, 'id', 'title'),
             ],
             [
                 'attribute' => 'status',
                 'format' => 'raw',
                 'value' => fn(Post $model) => PostHelper::statusLabel($model),
+                'filter' => Post::statusLabels(),
             ],
             [
                 'attribute' => 'published_at',
