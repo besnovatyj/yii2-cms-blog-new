@@ -47,9 +47,9 @@ class Post extends ActiveRecord
      * неотъемлемая часть доменной модели — они описывают возможные
      * состояния сущности.
      */
-    public const STATUS_DRAFT = 0;
-    public const STATUS_PUBLISHED = 1;
-    public const STATUS_ARCHIVED = 2;
+    public const int STATUS_DRAFT = 0;
+    public const int STATUS_PUBLISHED = 1;
+    public const int STATUS_ARCHIVED = 2;
 
     /**
      * Карта статусов для отображения в UI.

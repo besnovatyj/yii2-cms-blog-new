@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Besnovatyj\BlogNew\contracts;
 
 use Besnovatyj\BlogNew\models\Post;
+use RuntimeException;
+use yii\data\ActiveDataProvider;
 
 /**
  * Контракт репозитория постов.
@@ -39,7 +41,7 @@ interface PostRepositoryInterface
     /**
      * Найти пост по слагу (SEO-friendly URL).
      *
-     * Используется на фронтенде для отображения поста по красивому URL.
+     * Используется на фронтенде для отображения поста используя красивый URL.
      *
      * @param string $slug Уникальный слаг поста
      * @return Post|null
@@ -54,18 +56,18 @@ interface PostRepositoryInterface
      * и прагматизмом фреймворка.
      *
      * @param int $pageSize Количество постов на странице
-     * @return \yii\data\ActiveDataProvider
+     * @return ActiveDataProvider
      */
-    public function findAllPublished(int $pageSize = 10): \yii\data\ActiveDataProvider;
+    public function findAllPublished(int $pageSize = 10): ActiveDataProvider;
 
     /**
      * Получить опубликованные посты по категории.
      *
      * @param int $categoryId ID категории
      * @param int $pageSize Количество постов на странице
-     * @return \yii\data\ActiveDataProvider
+     * @return ActiveDataProvider
      */
-    public function findPublishedByCategoryId(int $categoryId, int $pageSize = 10): \yii\data\ActiveDataProvider;
+    public function findPublishedByCategoryId(int $categoryId, int $pageSize = 10): ActiveDataProvider;
 
     /**
      * Сохранить пост (создание или обновление).
@@ -75,7 +77,7 @@ interface PostRepositoryInterface
      *
      * @param Post $post Модель поста
      * @return bool Успешность сохранения
-     * @throws \RuntimeException Если сохранение не удалось
+     * @throws RuntimeException Если сохранение не удалось
      */
     public function save(Post $post): bool;
 
@@ -84,7 +86,7 @@ interface PostRepositoryInterface
      *
      * @param Post $post Модель поста
      * @return bool Успешность удаления
-     * @throws \RuntimeException Если удаление не удалось
+     * @throws RuntimeException Если удаление не удалось
      */
     public function delete(Post $post): bool;
 

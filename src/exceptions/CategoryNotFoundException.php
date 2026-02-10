@@ -12,9 +12,9 @@ class CategoryNotFoundException extends BlogModuleException
     public function __construct(int|string $identifier)
     {
         $message = is_int($identifier)
-            ? "Категория с ID {$identifier} не найдена"
+            ? "Категория с ID $identifier не найдена"
             : "Категория со слагом «{$identifier}» не найдена";
 
-        parent::__construct($message, 0, null);
+        parent::__construct($message);
     }
 }

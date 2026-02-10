@@ -23,7 +23,7 @@ class PostHelper
     /**
      * CSS-классы бейджей для статусов.
      */
-    private const STATUS_CLASSES = [
+    private const array STATUS_CLASSES = [
         Post::STATUS_DRAFT     => 'badge rounded-pill text-bg-secondary',
         Post::STATUS_PUBLISHED => 'badge rounded-pill text-bg-success',
         Post::STATUS_ARCHIVED  => 'badge rounded-pill text-bg-warning',

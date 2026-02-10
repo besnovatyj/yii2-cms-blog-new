@@ -1,17 +1,19 @@
 <?php
 
+use Besnovatyj\BlogNew\forms\backend\CategoryForm;
+use yii\helpers\Html;
+use yii\web\View;
+use yii\widgets\ActiveForm;
+
 /**
  * Форма создания/редактирования категории.
  *
- * @var \yii\web\View $this
- * @var \Besnovatyj\BlogNew\forms\backend\CategoryForm $model
+ * @var View $this
+ * @var CategoryForm $model
  */
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 $isUpdate = $model->title !== null;
-$this->title = $isUpdate ? "Редактирование: {$model->title}" : 'Новая категория';
+$this->title = $isUpdate ? "Редактирование: $model->title" : 'Новая категория';
 ?>
 
 <div class="blog-category-form">

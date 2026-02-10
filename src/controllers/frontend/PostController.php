@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Besnovatyj\BlogNew\controllers\frontend;
 
+use yii\base\Module;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use Besnovatyj\BlogNew\contracts\PostServiceInterface;
@@ -29,7 +30,7 @@ class PostController extends Controller
 {
     public function __construct(
         string $id,
-        \yii\base\Module $module,
+        Module $module,
         private readonly PostServiceInterface $postService,
         private readonly CategoryServiceInterface $categoryService,
         array $config = [],
@@ -57,6 +58,7 @@ class PostController extends Controller
      * Контроллер просто ловит исключение и конвертит в 404.
      *
      * @param string $slug URL-слаг поста
+     * @throws NotFoundHttpException
      */
     public function actionView(string $slug): string
     {
@@ -75,6 +77,7 @@ class PostController extends Controller
      * Посты по категории.
      *
      * @param string $slug Слаг категории
+     * @throws NotFoundHttpException
      */
     public function actionCategory(string $slug): string
     {

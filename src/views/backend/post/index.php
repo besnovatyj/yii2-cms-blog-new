@@ -3,17 +3,22 @@
 /**
  * Список постов в админке.
  *
- * @var \yii\web\View $this
- * @var \Besnovatyj\BlogNew\forms\backend\search\PostSearch $searchModel
- * @var \yii\data\ActiveDataProvider $dataProvider
- * @var \Besnovatyj\BlogNew\models\Category[] $categories
+ * @var View $this
+ * @var PostSearch $searchModel
+ * @var ActiveDataProvider $dataProvider
+ * @var Category[] $categories
  */
 
+use Besnovatyj\BlogNew\forms\backend\search\PostSearch;
+use Besnovatyj\BlogNew\models\Category;
+use yii\data\ActiveDataProvider;
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use Besnovatyj\BlogNew\helpers\PostHelper;
 use Besnovatyj\BlogNew\models\Post;
+use yii\web\View;
 
 $this->title = 'Управление постами';
 ?>
@@ -45,7 +50,7 @@ $this->title = 'Управление постами';
                 'format' => 'datetime',
             ],
             [
-                'class' => \yii\grid\ActionColumn::class,
+                'class' => ActionColumn::class,
                 'template' => '{update} {delete}',
             ],
         ],

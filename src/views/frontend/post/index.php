@@ -3,12 +3,16 @@
 /**
  * Список постов блога (фронтенд).
  *
- * @var \yii\web\View $this
- * @var \yii\data\ActiveDataProvider $dataProvider
- * @var \Besnovatyj\BlogNew\models\Category[] $categories
+ * @var View $this
+ * @var ActiveDataProvider $dataProvider
+ * @var Category[] $categories
  */
 
+use Besnovatyj\BlogNew\models\Category;
+use Besnovatyj\BlogNew\models\Post;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ListView;
 
 $this->title = 'Блог';
@@ -20,7 +24,7 @@ $this->title = 'Блог';
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
         'itemView' => function ($model) {
-            /** @var \Besnovatyj\BlogNew\models\Post $model */
+            /** @var Post $model */
             return Html::tag('article', implode("\n", [
                 Html::tag('h2', Html::a(
                     Html::encode($model->title),

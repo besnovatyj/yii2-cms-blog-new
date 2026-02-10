@@ -6,18 +6,21 @@
  * Единая форма для create и update.
  * Различие определяется по заполненности модели.
  *
- * @var \yii\web\View $this
- * @var \Besnovatyj\BlogNew\forms\backend\PostForm $model
- * @var \Besnovatyj\BlogNew\models\Category[] $categories
+ * @var View $this
+ * @var PostForm $model
+ * @var Category[] $categories
  */
 
+use Besnovatyj\BlogNew\forms\backend\PostForm;
+use Besnovatyj\BlogNew\models\Category;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 use Besnovatyj\BlogNew\models\Post;
 
 $isUpdate = $model->title !== null;
-$this->title = $isUpdate ? "Редактирование: {$model->title}" : 'Новый пост';
+$this->title = $isUpdate ? "Редактирование: $model->title" : 'Новый пост';
 ?>
 
 <div class="blog-post-form">

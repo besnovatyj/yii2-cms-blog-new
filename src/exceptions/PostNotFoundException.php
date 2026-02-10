@@ -20,9 +20,9 @@ class PostNotFoundException extends BlogModuleException
     public function __construct(int|string $identifier)
     {
         $message = is_int($identifier)
-            ? "Пост с ID {$identifier} не найден"
+            ? "Пост с ID $identifier не найден"
             : "Пост со слагом «{$identifier}» не найден";
 
-        parent::__construct($message, 0, null);
+        parent::__construct($message);
     }
 }

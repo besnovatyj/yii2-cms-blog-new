@@ -6,7 +6,10 @@ namespace Besnovatyj\BlogNew\repositories;
 
 use Besnovatyj\BlogNew\contracts\PostRepositoryInterface;
 use Besnovatyj\BlogNew\models\Post;
+use RuntimeException;
+use Throwable;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 
 /**
  * Репозиторий постов (реализация на ActiveRecord).
@@ -107,13 +110,14 @@ class PostRepository implements PostRepositoryInterface
      * Валидация — ответственность сервиса. Репозиторий — тупая труба в БД.
      * Если данные невалидны, save(false) кинет ошибку БД,
      * но до этого не должно дойти — сервис проверит раньше.
+     * @throws Exception
      */
     public function save(Post $post): bool
     {
         // save(false) — пропускаем валидацию в AR, она уже выполнена в сервисе.
         // Это избегает двойной валидации и делает ответственность явной.
         if (!$post->save(false)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Не удалось сохранить пост: ' . implode(', ', $post->getFirstErrors())
             );
         }
@@ -123,11 +127,12 @@ class PostRepository implements PostRepositoryInterface
 
     /**
      * {@inheritdoc}
+     * @throws Throwable
      */
     public function delete(Post $post): bool
     {
         if ($post->delete() === false) {
-            throw new \RuntimeException("Не удалось удалить пост с ID {$post->id}");
+            throw new RuntimeException("Не удалось удалить пост с ID $post->id");
         }
 
         return true;

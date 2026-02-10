@@ -6,7 +6,12 @@ namespace Besnovatyj\BlogNew\contracts;
 
 use Besnovatyj\BlogNew\dto\PostCreateDto;
 use Besnovatyj\BlogNew\dto\PostUpdateDto;
+use Besnovatyj\BlogNew\exceptions\CategoryNotFoundException;
+use Besnovatyj\BlogNew\exceptions\PostCreateException;
+use Besnovatyj\BlogNew\exceptions\PostNotFoundException;
+use Besnovatyj\BlogNew\exceptions\PostUpdateException;
 use Besnovatyj\BlogNew\models\Post;
+use yii\data\ActiveDataProvider;
 
 /**
  * Контракт сервиса постов.
@@ -30,7 +35,7 @@ interface PostServiceInterface
      *
      * @param int $id
      * @return Post
-     * @throws \Besnovatyj\BlogNew\exceptions\PostNotFoundException
+     * @throws PostNotFoundException
      */
     public function getById(int $id): Post;
 
@@ -42,7 +47,7 @@ interface PostServiceInterface
      *
      * @param string $slug
      * @return Post
-     * @throws \Besnovatyj\BlogNew\exceptions\PostNotFoundException
+     * @throws PostNotFoundException
      */
     public function getPublishedBySlug(string $slug): Post;
 
@@ -50,26 +55,26 @@ interface PostServiceInterface
      * Получить список опубликованных постов с пагинацией.
      *
      * @param int $pageSize
-     * @return \yii\data\ActiveDataProvider
+     * @return ActiveDataProvider
      */
-    public function getPublishedList(int $pageSize = 10): \yii\data\ActiveDataProvider;
+    public function getPublishedList(int $pageSize = 10): ActiveDataProvider;
 
     /**
      * Получить посты по категории.
      *
      * @param string $categorySlug Слаг категории
      * @param int $pageSize
-     * @return \yii\data\ActiveDataProvider
-     * @throws \Besnovatyj\BlogNew\exceptions\CategoryNotFoundException
+     * @return ActiveDataProvider
+     * @throws CategoryNotFoundException
      */
-    public function getPublishedByCategory(string $categorySlug, int $pageSize = 10): \yii\data\ActiveDataProvider;
+    public function getPublishedByCategory(string $categorySlug, int $pageSize = 10): ActiveDataProvider;
 
     /**
      * Создать новый пост.
      *
      * @param PostCreateDto $dto Данные для создания
      * @return Post Созданный пост
-     * @throws \Besnovatyj\BlogNew\exceptions\PostCreateException
+     * @throws PostCreateException
      */
     public function create(PostCreateDto $dto): Post;
 
@@ -79,8 +84,8 @@ interface PostServiceInterface
      * @param int $id ID поста
      * @param PostUpdateDto $dto Данные для обновления
      * @return Post Обновлённый пост
-     * @throws \Besnovatyj\BlogNew\exceptions\PostNotFoundException
-     * @throws \Besnovatyj\BlogNew\exceptions\PostUpdateException
+     * @throws PostNotFoundException
+     * @throws PostUpdateException
      */
     public function update(int $id, PostUpdateDto $dto): Post;
 
@@ -88,7 +93,7 @@ interface PostServiceInterface
      * Удалить пост.
      *
      * @param int $id ID поста
-     * @throws \Besnovatyj\BlogNew\exceptions\PostNotFoundException
+     * @throws PostNotFoundException
      */
     public function delete(int $id): void;
 
@@ -101,7 +106,7 @@ interface PostServiceInterface
      *
      * @param int $id
      * @return Post
-     * @throws \Besnovatyj\BlogNew\exceptions\PostNotFoundException
+     * @throws PostNotFoundException
      */
     public function publish(int $id): Post;
 
@@ -110,7 +115,7 @@ interface PostServiceInterface
      *
      * @param int $id
      * @return Post
-     * @throws \Besnovatyj\BlogNew\exceptions\PostNotFoundException
+     * @throws PostNotFoundException
      */
     public function unpublish(int $id): Post;
 }

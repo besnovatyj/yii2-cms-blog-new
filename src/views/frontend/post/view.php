@@ -3,11 +3,13 @@
 /**
  * Просмотр одного поста (фронтенд).
  *
- * @var \yii\web\View $this
- * @var \Besnovatyj\BlogNew\models\Post $post
+ * @var View $this
+ * @var Post $post
  */
 
+use Besnovatyj\BlogNew\models\Post;
 use yii\helpers\Html;
+use yii\web\View;
 
 $this->title = $post->meta_title ?: $post->title;
 

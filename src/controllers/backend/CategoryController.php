@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Besnovatyj\BlogNew\controllers\backend;
 
 use Yii;
+use yii\base\Module;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -23,13 +24,13 @@ class CategoryController extends Controller
 {
     /**
      * @param string $id ID контроллера
-     * @param \yii\base\Module $module Модуль-владелец
+     * @param Module $module Модуль-владелец
      * @param CategoryServiceInterface $categoryService Сервис категорий (inject через DI)
      * @param array $config Конфигурация
      */
     public function __construct(
         string $id,
-        \yii\base\Module $module,
+        Module $module,
         private readonly CategoryServiceInterface $categoryService,
         array $config = [],
     ) {

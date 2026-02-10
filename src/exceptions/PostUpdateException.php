@@ -9,7 +9,11 @@ namespace Besnovatyj\BlogNew\exceptions;
  */
 class PostUpdateException extends BlogModuleException
 {
-    private array $validationErrors;
+    private array $validationErrors {
+        get {
+            return $this->validationErrors;
+        }
+    }
 
     public function __construct(array $validationErrors = [], string $message = 'Не удалось обновить пост')
     {
@@ -17,8 +21,4 @@ class PostUpdateException extends BlogModuleException
         parent::__construct($message);
     }
 
-    public function getValidationErrors(): array
-    {
-        return $this->validationErrors;
-    }
 }

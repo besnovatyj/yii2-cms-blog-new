@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Besnovatyj\BlogNew\contracts;
 
 use Besnovatyj\BlogNew\models\Category;
+use RuntimeException;
 
 /**
  * Контракт репозитория категорий.
@@ -41,14 +42,14 @@ interface CategoryRepositoryInterface
     /**
      * @param Category $category
      * @return bool
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function save(Category $category): bool;
 
     /**
      * @param Category $category
      * @return bool
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function delete(Category $category): bool;
 }

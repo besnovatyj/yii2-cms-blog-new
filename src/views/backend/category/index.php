@@ -1,17 +1,21 @@
 <?php
 
-/**
- * Список категорий в админке.
- *
- * @var \yii\web\View $this
- * @var \Besnovatyj\BlogNew\forms\backend\search\CategorySearch $searchModel
- * @var \yii\data\ActiveDataProvider $dataProvider
- */
-
+use Besnovatyj\BlogNew\forms\backend\search\CategorySearch;
+use yii\data\ActiveDataProvider;
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use Besnovatyj\BlogNew\helpers\CategoryHelper;
 use Besnovatyj\BlogNew\models\Category;
+use yii\web\View;
+
+/**
+ * Список категорий в админке.
+ *
+ * @var View $this
+ * @var CategorySearch $searchModel
+ * @var ActiveDataProvider $dataProvider
+ */
 
 $this->title = 'Управление категориями';
 ?>
@@ -36,7 +40,7 @@ $this->title = 'Управление категориями';
                 'filter' => CategoryHelper::activeList(),
             ],
             [
-                'class' => \yii\grid\ActionColumn::class,
+                'class' => ActionColumn::class,
                 'template' => '{update} {delete}',
             ],
         ],

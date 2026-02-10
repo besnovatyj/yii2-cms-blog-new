@@ -12,7 +12,11 @@ namespace Besnovatyj\BlogNew\exceptions;
 class PostCreateException extends BlogModuleException
 {
     /** @var array Ошибки валидации модели */
-    private array $validationErrors;
+    private array $validationErrors {
+        get {
+            return $this->validationErrors;
+        }
+    }
 
     public function __construct(array $validationErrors = [], string $message = 'Не удалось создать пост')
     {
@@ -20,8 +24,4 @@ class PostCreateException extends BlogModuleException
         parent::__construct($message);
     }
 
-    public function getValidationErrors(): array
-    {
-        return $this->validationErrors;
-    }
 }

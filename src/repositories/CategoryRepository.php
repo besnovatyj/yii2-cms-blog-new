@@ -6,7 +6,9 @@ namespace Besnovatyj\BlogNew\repositories;
 
 use Besnovatyj\BlogNew\contracts\CategoryRepositoryInterface;
 use Besnovatyj\BlogNew\models\Category;
-use yii\data\ActiveDataProvider;
+use RuntimeException;
+use Throwable;
+use yii\db\Exception;
 
 /**
  * Репозиторий категорий (реализация на ActiveRecord).
@@ -48,11 +50,12 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function save(Category $category): bool
     {
         if (!$category->save(false)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Не удалось сохранить категорию: ' . implode(', ', $category->getFirstErrors())
             );
         }
@@ -62,11 +65,12 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     /**
      * {@inheritdoc}
+     * @throws Throwable
      */
     public function delete(Category $category): bool
     {
         if ($category->delete() === false) {
-            throw new \RuntimeException("Не удалось удалить категорию с ID {$category->id}");
+            throw new RuntimeException("Не удалось удалить категорию с ID $category->id");
         }
 
         return true;

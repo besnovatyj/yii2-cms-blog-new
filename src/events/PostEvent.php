@@ -37,19 +37,19 @@ use yii\base\Event;
 class PostEvent extends Event
 {
     /** Событие после создания поста */
-    public const EVENT_AFTER_CREATE = 'afterPostCreate';
+    public const string EVENT_AFTER_CREATE = 'afterPostCreate';
 
     /** Событие после обновления поста */
-    public const EVENT_AFTER_UPDATE = 'afterPostUpdate';
+    public const string EVENT_AFTER_UPDATE = 'afterPostUpdate';
 
     /** Событие после удаления поста */
-    public const EVENT_AFTER_DELETE = 'afterPostDelete';
+    public const string EVENT_AFTER_DELETE = 'afterPostDelete';
 
     /** Событие после публикации поста */
-    public const EVENT_AFTER_PUBLISH = 'afterPostPublish';
+    public const string EVENT_AFTER_PUBLISH = 'afterPostPublish';
 
     /** Событие после снятия с публикации */
-    public const EVENT_AFTER_UNPUBLISH = 'afterPostUnpublish';
+    public const string EVENT_AFTER_UNPUBLISH = 'afterPostUnpublish';
 
     /**
      * @param Post $post Пост, с которым произошло событие

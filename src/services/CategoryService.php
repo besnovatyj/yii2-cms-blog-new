@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Besnovatyj\BlogNew\services;
 
 use yii\base\Component;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Inflector;
 use Besnovatyj\BlogNew\contracts\CategoryRepositoryInterface;
 use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
