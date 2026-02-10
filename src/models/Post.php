@@ -91,60 +91,6 @@ class Post extends ActiveRecord
     }
 
     /**
-     * Правила валидации.
-     *
-     * Здесь только структурная валидация (типы, длины, обязательность).
-     * Бизнес-валидация (уникальность слага, проверка существования категории)
-     * выполняется в сервисном слое.
-     *
-     * Почему так? Потому что модель не должна лезть в базу для проверки
-     * уникальности — это ответственность репозитория, оркестрируемая сервисом.
-     */
-    public function rules(): array
-    {
-        return [
-            // Обязательные поля
-            [['title', 'content'], 'required'],
-
-            // Строки и их максимальная длина
-            [['title', 'slug', 'meta_title'], 'string', 'max' => 255],
-            [['meta_description'], 'string', 'max' => 500],
-            [['content', 'excerpt'], 'string'],
-
-            // Целые числа
-            [['category_id', 'author_id', 'status', 'published_at'], 'integer'],
-
-            // Значение по умолчанию
-            [['status'], 'default', 'value' => self::STATUS_DRAFT],
-
-            // Статус — одно из допустимых значений
-            [['status'], 'in', 'range' => array_keys(self::statusLabels())],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels(): array
-    {
-        return [
-            'id'               => 'ID',
-            'title'            => 'Заголовок',
-            'slug'             => 'URL-слаг',
-            'content'          => 'Содержание',
-            'excerpt'          => 'Краткое описание',
-            'category_id'      => 'Категория',
-            'author_id'        => 'Автор',
-            'status'           => 'Статус',
-            'meta_title'       => 'SEO-заголовок',
-            'meta_description' => 'SEO-описание',
-            'published_at'     => 'Дата публикации',
-            'created_at'       => 'Создан',
-            'updated_at'       => 'Обновлён',
-        ];
-    }
-
-    /**
      * Связь с категорией.
      *
      * Связи — часть описания доменной модели, им место здесь.

@@ -3,9 +3,6 @@
 /**
  * Список постов в админке.
  *
- * Вьюха НЕ содержит логики — только отображение данных,
- * которые подготовил контроллер. Это "V" в MVC.
- *
  * @var \yii\web\View $this
  * @var \yii\data\ActiveDataProvider $dataProvider
  * @var \Besnovatyj\BlogNew\models\Category[] $categories
@@ -13,6 +10,7 @@
 
 use yii\grid\GridView;
 use yii\helpers\Html;
+use Besnovatyj\BlogNew\helpers\PostHelper;
 use Besnovatyj\BlogNew\models\Post;
 
 $this->title = 'Управление постами';
@@ -34,7 +32,8 @@ $this->title = 'Управление постами';
             ],
             [
                 'attribute' => 'status',
-                'value' => fn(Post $model) => Post::statusLabels()[$model->status] ?? '?',
+                'format' => 'raw',
+                'value' => fn(Post $model) => PostHelper::statusLabel($model),
             ],
             [
                 'attribute' => 'published_at',
@@ -42,19 +41,7 @@ $this->title = 'Управление постами';
             ],
             [
                 'class' => \yii\grid\ActionColumn::class,
-                'template' => '{update} {publish} {delete}',
-                'buttons' => [
-                    'publish' => function ($url, Post $model) {
-                        if ($model->isPublished()) {
-                            return Html::a('Снять', ['unpublish', 'id' => $model->id], [
-                                'data-method' => 'post',
-                            ]);
-                        }
-                        return Html::a('Опубликовать', ['publish', 'id' => $model->id], [
-                            'data-method' => 'post',
-                        ]);
-                    },
-                ],
+                'template' => '{update} {delete}',
             ],
         ],
     ]) ?>

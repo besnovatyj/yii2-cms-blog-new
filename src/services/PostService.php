@@ -144,9 +144,10 @@ class PostService extends Component implements PostServiceInterface
      * 2. Генерируем слаг, если не задан
      * 3. Проверяем уникальность слага (бизнес-правило)
      * 4. Устанавливаем автора
-     * 5. Валидируем модель
-     * 6. Сохраняем через репозиторий
-     * 7. Генерируем событие
+     * 5. Сохраняем через репозиторий
+     * 6. Генерируем событие
+     *
+     * Валидация пользовательского ввода выполняется в PostForm до вызова сервиса.
      *
      * Каждый шаг — отдельная ответственность, но оркестрация — задача сервиса.
      * Это паттерн "Application Service" из DDD.
@@ -170,11 +171,6 @@ class PostService extends Component implements PostServiceInterface
 
         // Автор: из DTO или текущий пользователь
         $post->author_id = $dto->authorId ?? (int)Yii::$app->user->id;
-
-        // Валидация модели (структурная: типы, длины, обязательность)
-        if (!$post->validate()) {
-            throw new PostCreateException($post->getErrors());
-        }
 
         // Персистентность — делегируем репозиторию
         $this->postRepository->save($post);
@@ -205,10 +201,6 @@ class PostService extends Component implements PostServiceInterface
             throw new PostUpdateException(
                 ['slug' => 'Пост с таким URL-слагом уже существует']
             );
-        }
-
-        if (!$post->validate()) {
-            throw new PostUpdateException($post->getErrors());
         }
 
         $this->postRepository->save($post);

@@ -12,10 +12,9 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use Besnovatyj\BlogNew\contracts\PostServiceInterface;
 use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
-use Besnovatyj\BlogNew\dto\PostCreateDto;
-use Besnovatyj\BlogNew\dto\PostUpdateDto;
 use Besnovatyj\BlogNew\exceptions\BlogModuleException;
 use Besnovatyj\BlogNew\exceptions\PostNotFoundException;
+use Besnovatyj\BlogNew\forms\backend\PostForm;
 
 /**
  * Бэкенд-контроллер для управления постами (админка).
@@ -24,23 +23,15 @@ use Besnovatyj\BlogNew\exceptions\PostNotFoundException;
  *
  * Что делает контроллер:
  * 1. Принимает HTTP-запрос
- * 2. Преобразует данные запроса в DTO
- * 3. Вызывает метод сервиса
- * 4. Обрабатывает результат/ошибку
- * 5. Возвращает ответ (рендер вьюхи или редирект)
- *
- * Чего контроллер НЕ делает:
- * - НЕ содержит бизнес-логику
- * - НЕ работает с репозиторием напрямую
- * - НЕ создаёт модели (это делает сервис)
- * - НЕ валидирует данные (это делает сервис)
+ * 2. Загружает данные в форму и валидирует
+ * 3. Конвертирует форму в DTO
+ * 4. Вызывает метод сервиса
+ * 5. Обрабатывает результат/ошибку
+ * 6. Возвращает ответ (рендер вьюхи или редирект)
  *
  * Зависимости через конструктор (Constructor Injection):
  * Yii2 DI-контейнер автоматически передаёт PostServiceInterface,
- * потому что мы зарегистрировали привязку в Module::registerDependencies().
- *
- * Creator (GRASP): контроллер не создаёт сервис — он получает его извне.
- * Это Inversion of Control (IoC).
+ * потому что мы зарегистрировали привязку в Module::init().
  */
 class PostController extends Controller
 {
@@ -114,24 +105,20 @@ class PostController extends Controller
     /**
      * Создание нового поста.
      *
-     * Обратите внимание на паттерн:
+     * Паттерн:
      * 1. GET-запрос → показываем пустую форму
-     * 2. POST-запрос → создаём DTO из данных формы → вызываем сервис
+     * 2. POST-запрос → загружаем данные в форму → валидируем → создаём DTO → сервис
      * 3. Успех → редирект на список
-     * 4. Ошибка валидации → показываем форму с ошибками
-     *
-     * Контроллер не знает, КАК создаётся пост.
-     * Он знает только, ЧТО нужно его создать.
+     * 4. Ошибка валидации формы → показываем форму с ошибками
+     * 5. Ошибка бизнес-логики (сервис) → flash-сообщение + форма
      */
     public function actionCreate(): string|Response
     {
-        if (Yii::$app->request->isPost) {
-            try {
-                $dto = PostCreateDto::fromArray(
-                    Yii::$app->request->post('Post', [])
-                );
+        $form = new PostForm();
 
-                $post = $this->postService->create($dto);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $this->postService->create($form->toCreateDto());
 
                 Yii::$app->session->setFlash('success', 'Пост успешно создан');
                 return $this->redirect(['index']);
@@ -143,7 +130,7 @@ class PostController extends Controller
         }
 
         return $this->render('form', [
-            'post'       => null, // null = создание (не обновление)
+            'model'      => $form,
             'categories' => $this->categoryService->getActiveList(),
         ]);
     }
@@ -158,27 +145,29 @@ class PostController extends Controller
         try {
             // Получаем пост для отображения в форме
             $post = $this->postService->getById($id);
-
-            if (Yii::$app->request->isPost) {
-                $dto = PostUpdateDto::fromArray(
-                    Yii::$app->request->post('Post', [])
-                );
-
-                $this->postService->update($id, $dto);
-
-                Yii::$app->session->setFlash('success', 'Пост успешно обновлён');
-                return $this->redirect(['index']);
-            }
-
-            return $this->render('form', [
-                'post'       => $post,
-                'categories' => $this->categoryService->getActiveList(),
-            ]);
         } catch (PostNotFoundException $e) {
             // Маппинг: доменное исключение "не найден" → HTTP 404.
             // Это единственное место, где домен "касается" HTTP.
             throw new NotFoundHttpException($e->getMessage(), 0, $e);
         }
+
+        $form = new PostForm($post);
+
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $this->postService->update($id, $form->toUpdateDto());
+
+                Yii::$app->session->setFlash('success', 'Пост успешно обновлён');
+                return $this->redirect(['index']);
+            } catch (BlogModuleException $e) {
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('form', [
+            'model'      => $form,
+            'categories' => $this->categoryService->getActiveList(),
+        ]);
     }
 
     /**
