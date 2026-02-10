@@ -1,0 +1,237 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Besnovatyj\BlogNew\controllers\backend;
+
+use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use Besnovatyj\BlogNew\contracts\PostServiceInterface;
+use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
+use Besnovatyj\BlogNew\dto\PostCreateDto;
+use Besnovatyj\BlogNew\dto\PostUpdateDto;
+use Besnovatyj\BlogNew\exceptions\BlogModuleException;
+use Besnovatyj\BlogNew\exceptions\PostNotFoundException;
+
+/**
+ * Бэкенд-контроллер для управления постами (админка).
+ *
+ * КЛЮЧЕВОЙ ПРИНЦИП: контроллер — ТОНКИЙ.
+ *
+ * Что делает контроллер:
+ * 1. Принимает HTTP-запрос
+ * 2. Преобразует данные запроса в DTO
+ * 3. Вызывает метод сервиса
+ * 4. Обрабатывает результат/ошибку
+ * 5. Возвращает ответ (рендер вьюхи или редирект)
+ *
+ * Чего контроллер НЕ делает:
+ * - НЕ содержит бизнес-логику
+ * - НЕ работает с репозиторием напрямую
+ * - НЕ создаёт модели (это делает сервис)
+ * - НЕ валидирует данные (это делает сервис)
+ *
+ * Зависимости через конструктор (Constructor Injection):
+ * Yii2 DI-контейнер автоматически передаёт PostServiceInterface,
+ * потому что мы зарегистрировали привязку в Module::registerDependencies().
+ *
+ * Creator (GRASP): контроллер не создаёт сервис — он получает его извне.
+ * Это Inversion of Control (IoC).
+ */
+class PostController extends Controller
+{
+    /**
+     * @param string $id ID контроллера
+     * @param \yii\base\Module $module Модуль-владелец
+     * @param PostServiceInterface $postService Сервис постов (inject через DI)
+     * @param CategoryServiceInterface $categoryService Сервис категорий (для списков)
+     * @param array $config Конфигурация
+     */
+    public function __construct(
+        string $id,
+        \yii\base\Module $module,
+        private readonly PostServiceInterface $postService,
+        private readonly CategoryServiceInterface $categoryService,
+        array $config = [],
+    ) {
+        parent::__construct($id, $module, $config);
+    }
+
+    /**
+     * Фильтры поведения контроллера.
+     *
+     * Это инфраструктурная забота контроллера — он знает о HTTP:
+     * - Какие действия требуют авторизации
+     * - Какие HTTP-методы допустимы
+     */
+    public function behaviors(): array
+    {
+        return [
+            // Контроль доступа: только авторизованные пользователи
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'], // Только залогиненные
+                    ],
+                ],
+            ],
+
+            // Ограничение HTTP-методов
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete'    => ['POST'],
+                    'publish'   => ['POST'],
+                    'unpublish' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Список постов в админке.
+     *
+     * Контроллер просто берёт фильтры из GET-параметров и передаёт в сервис.
+     * Никакого построения запросов, никакой фильтрации — всё в сервисе → репозитории.
+     */
+    public function actionIndex(): string
+    {
+        $filters = Yii::$app->request->get('filter', []);
+        $dataProvider = $this->postService->getAdminList($filters);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+            'categories'   => $this->categoryService->getActiveList(),
+        ]);
+    }
+
+    /**
+     * Создание нового поста.
+     *
+     * Обратите внимание на паттерн:
+     * 1. GET-запрос → показываем пустую форму
+     * 2. POST-запрос → создаём DTO из данных формы → вызываем сервис
+     * 3. Успех → редирект на список
+     * 4. Ошибка валидации → показываем форму с ошибками
+     *
+     * Контроллер не знает, КАК создаётся пост.
+     * Он знает только, ЧТО нужно его создать.
+     */
+    public function actionCreate(): string|Response
+    {
+        if (Yii::$app->request->isPost) {
+            try {
+                $dto = PostCreateDto::fromArray(
+                    Yii::$app->request->post('Post', [])
+                );
+
+                $post = $this->postService->create($dto);
+
+                Yii::$app->session->setFlash('success', 'Пост успешно создан');
+                return $this->redirect(['index']);
+            } catch (BlogModuleException $e) {
+                // Маппинг доменного исключения → пользовательское сообщение.
+                // Сервис не знает про flash-сообщения — это забота контроллера.
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('form', [
+            'post'       => null, // null = создание (не обновление)
+            'categories' => $this->categoryService->getActiveList(),
+        ]);
+    }
+
+    /**
+     * Обновление существующего поста.
+     *
+     * @param int $id ID поста
+     */
+    public function actionUpdate(int $id): string|Response
+    {
+        try {
+            // Получаем пост для отображения в форме
+            $post = $this->postService->getById($id);
+
+            if (Yii::$app->request->isPost) {
+                $dto = PostUpdateDto::fromArray(
+                    Yii::$app->request->post('Post', [])
+                );
+
+                $this->postService->update($id, $dto);
+
+                Yii::$app->session->setFlash('success', 'Пост успешно обновлён');
+                return $this->redirect(['index']);
+            }
+
+            return $this->render('form', [
+                'post'       => $post,
+                'categories' => $this->categoryService->getActiveList(),
+            ]);
+        } catch (PostNotFoundException $e) {
+            // Маппинг: доменное исключение "не найден" → HTTP 404.
+            // Это единственное место, где домен "касается" HTTP.
+            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+        }
+    }
+
+    /**
+     * Удаление поста.
+     *
+     * @param int $id ID поста
+     */
+    public function actionDelete(int $id): Response
+    {
+        try {
+            $this->postService->delete($id);
+            Yii::$app->session->setFlash('success', 'Пост удалён');
+        } catch (PostNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Публикация поста.
+     *
+     * Отдельный action, а не параметр в update, потому что
+     * публикация — самостоятельное бизнес-действие (не просто смена поля).
+     *
+     * @param int $id ID поста
+     */
+    public function actionPublish(int $id): Response
+    {
+        try {
+            $this->postService->publish($id);
+            Yii::$app->session->setFlash('success', 'Пост опубликован');
+        } catch (PostNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Снятие поста с публикации.
+     *
+     * @param int $id ID поста
+     */
+    public function actionUnpublish(int $id): Response
+    {
+        try {
+            $this->postService->unpublish($id);
+            Yii::$app->session->setFlash('success', 'Пост снят с публикации');
+        } catch (PostNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+        }
+
+        return $this->redirect(['index']);
+    }
+}
