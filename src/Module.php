@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Besnovatyj\BlogNew;
 
 use Yii;
-use yii\base\Application;
-use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
 use Besnovatyj\BlogNew\contracts\PostRepositoryInterface;
 use Besnovatyj\BlogNew\contracts\CategoryRepositoryInterface;
@@ -32,17 +30,15 @@ use Besnovatyj\BlogNew\services\CategoryService;
  *         'class' => \Besnovatyj\BlogNew\Module::class,
  *     ],
  * ],
- * 'bootstrap' => ['blog'],
  * ```
  *
- * Почему Module реализует BootstrapInterface:
- * - DI-привязки нужно зарегистрировать ДО того, как контроллер попытается
- *   получить сервис через конструктор. Bootstrap-фаза — единственный момент,
- *   когда мы можем гарантировать это.
+ * URL-правила регистрируются в Bootstrap (через composer.json extra.bootstrap).
+ * DI-привязки регистрируются здесь в init() — только когда модуль создаётся
+ * (т.е. URL матчится на маршрут блога). Это lazy loading.
  *
  * @property-read string $controllerNamespace
  */
-class Module extends BaseModule implements BootstrapInterface
+class Module extends BaseModule
 {
     /**
      * Пространство имён контроллеров по умолчанию.
@@ -54,8 +50,8 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * Инициализация модуля.
      *
-     * Определяем, в каком приложении работаем (frontend/backend),
-     * и настраиваем namespace контроллеров соответственно.
+     * Вызывается только когда URL матчится на маршрут модуля.
+     * Регистрируем DI-привязки и определяем контекст приложения.
      *
      * Принцип: модуль сам знает, как ему работать в разных контекстах —
      * приложению не нужно об этом думать (Low Coupling, GRASP).
@@ -64,27 +60,14 @@ class Module extends BaseModule implements BootstrapInterface
     {
         parent::init();
 
+        $this->registerDependencies();
+        $this->registerTranslations();
+
         // Определяем контекст приложения по его id.
         // В advanced-шаблоне Yii2 id обычно 'app-backend' / 'app-frontend'.
         if ($this->isBackendApp()) {
             $this->controllerNamespace = 'Besnovatyj\BlogNew\controllers\backend';
         }
-    }
-
-    /**
-     * Регистрация зависимостей и маршрутов на этапе bootstrap.
-     *
-     * Зачем это здесь, а не в init():
-     * - bootstrap() вызывается раньше, чем любой контроллер
-     * - У нас есть доступ к $app и его компонентам
-     * - Можно настроить URL-правила глобально
-     *
-     * @param Application $app
-     */
-    public function bootstrap($app): void
-    {
-        $this->registerDependencies();
-        $this->registerRoutes($app);
     }
 
     /**
@@ -116,30 +99,11 @@ class Module extends BaseModule implements BootstrapInterface
     }
 
     /**
-     * Регистрация URL-правил модуля.
-     *
-     * Маршруты определяются внутри модуля, а не в конфиге приложения.
-     * Это обеспечивает инкапсуляцию: модуль — самодостаточная единица,
-     * которую можно подключить одной строчкой.
-     *
-     * @param Application $app
+     * Регистрация переводов модуля.
      */
-    private function registerRoutes(Application $app): void
+    private function registerTranslations(): void
     {
-        $urlManager = $app->getUrlManager();
-
-        $urlManager->addRules([
-            // Фронтенд: красивые URL для посетителей
-            'blog'                        => 'blog/post/index',
-            'blog/category/<slug:\w+>'    => 'blog/post/category',
-            'blog/<slug:[\w-]+>'          => 'blog/post/view',
-
-            // Бэкенд: стандартные CRUD-маршруты для админки
-            'blog/manage'                 => 'blog/post/index',
-            'blog/manage/create'          => 'blog/post/create',
-            'blog/manage/<id:\d+>/update' => 'blog/post/update',
-            'blog/manage/<id:\d+>/delete' => 'blog/post/delete',
-        ], false); // false = добавить правила, а не перезаписать
+        // TODO: Yii::$app->i18n->translations['blog*'] = [...]
     }
 
     /**
