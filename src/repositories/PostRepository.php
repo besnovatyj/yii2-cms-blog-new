@@ -103,32 +103,6 @@ class PostRepository implements PostRepositoryInterface
     /**
      * {@inheritdoc}
      *
-     * Для админки: поддерживаем фильтрацию по статусу, категории, поиск по заголовку.
-     * Сортировка по дате создания — новые сверху.
-     */
-    public function findAllForAdmin(array $filters = [], int $pageSize = 20): ActiveDataProvider
-    {
-        $query = Post::find()
-            ->with(['category'])
-            ->orderBy(['created_at' => SORT_DESC]);
-
-        // Применяем фильтры. Используем andFilterWhere — он игнорирует пустые значения.
-        // Это безопасно: Yii2 экранирует значения через PDO.
-        $query->andFilterWhere(['status' => $filters['status'] ?? null]);
-        $query->andFilterWhere(['category_id' => $filters['category_id'] ?? null]);
-        $query->andFilterWhere(['like', 'title', $filters['title'] ?? null]);
-
-        return new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => $pageSize,
-            ],
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
      * Обратите внимание: репозиторий НЕ вызывает validate().
      * Валидация — ответственность сервиса. Репозиторий — тупая труба в БД.
      * Если данные невалидны, save(false) кинет ошибку БД,

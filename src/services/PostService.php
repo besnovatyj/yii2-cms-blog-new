@@ -124,14 +124,6 @@ class PostService extends Component implements PostServiceInterface
         return $this->postRepository->findPublishedByCategoryId($category->id, $pageSize);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAdminList(array $filters = [], int $pageSize = 20): ActiveDataProvider
-    {
-        return $this->postRepository->findAllForAdmin($filters, $pageSize);
-    }
-
     // ──────────────────────────────────────────────────────────────
     //  Запись (Command)
     // ──────────────────────────────────────────────────────────────

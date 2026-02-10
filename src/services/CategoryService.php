@@ -53,14 +53,6 @@ class CategoryService extends Component implements CategoryServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getAdminList(): ActiveDataProvider
-    {
-        return $this->categoryRepository->findAllForAdmin();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function create(CategoryDto $dto): Category
     {
         $category = new Category();

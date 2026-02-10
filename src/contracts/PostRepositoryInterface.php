@@ -68,15 +68,6 @@ interface PostRepositoryInterface
     public function findPublishedByCategoryId(int $categoryId, int $pageSize = 10): \yii\data\ActiveDataProvider;
 
     /**
-     * Получить все посты для админки (включая черновики).
-     *
-     * @param array $filters Массив фильтров для поиска
-     * @param int $pageSize Количество постов на странице
-     * @return \yii\data\ActiveDataProvider
-     */
-    public function findAllForAdmin(array $filters = [], int $pageSize = 20): \yii\data\ActiveDataProvider;
-
-    /**
      * Сохранить пост (создание или обновление).
      *
      * Репозиторий отвечает только за персистентность.

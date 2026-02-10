@@ -65,15 +65,6 @@ interface PostServiceInterface
     public function getPublishedByCategory(string $categorySlug, int $pageSize = 10): \yii\data\ActiveDataProvider;
 
     /**
-     * Получить список всех постов для админки.
-     *
-     * @param array $filters
-     * @param int $pageSize
-     * @return \yii\data\ActiveDataProvider
-     */
-    public function getAdminList(array $filters = [], int $pageSize = 20): \yii\data\ActiveDataProvider;
-
-    /**
      * Создать новый пост.
      *
      * @param PostCreateDto $dto Данные для создания

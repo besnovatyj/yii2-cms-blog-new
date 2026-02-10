@@ -49,16 +49,6 @@ class CategoryRepository implements CategoryRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function findAllForAdmin(): ActiveDataProvider
-    {
-        return new ActiveDataProvider([
-            'query' => Category::find()->orderBy(['sort_order' => SORT_ASC]),
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function save(Category $category): bool
     {
         if (!$category->save(false)) {

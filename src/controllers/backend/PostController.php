@@ -141,6 +141,7 @@ class PostController extends Controller
      * Обновление существующего поста.
      *
      * @param int $id ID поста
+     * @throws NotFoundHttpException
      */
     public function actionUpdate(int $id): string|Response
     {
@@ -176,6 +177,7 @@ class PostController extends Controller
      * Удаление поста.
      *
      * @param int $id ID поста
+     * @throws NotFoundHttpException
      */
     public function actionDelete(int $id): Response
     {
@@ -196,6 +198,7 @@ class PostController extends Controller
      * публикация — самостоятельное бизнес-действие (не просто смена поля).
      *
      * @param int $id ID поста
+     * @throws NotFoundHttpException
      */
     public function actionPublish(int $id): Response
     {
@@ -213,6 +216,7 @@ class PostController extends Controller
      * Снятие поста с публикации.
      *
      * @param int $id ID поста
+     * @throws NotFoundHttpException
      */
     public function actionUnpublish(int $id): Response
     {

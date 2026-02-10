@@ -39,13 +39,6 @@ interface CategoryRepositoryInterface
     public function findAllActive(): array;
 
     /**
-     * Получить все категории для админки.
-     *
-     * @return \yii\data\ActiveDataProvider
-     */
-    public function findAllForAdmin(): \yii\data\ActiveDataProvider;
-
-    /**
      * @param Category $category
      * @return bool
      * @throws \RuntimeException

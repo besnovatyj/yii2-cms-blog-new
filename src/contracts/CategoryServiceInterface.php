@@ -27,13 +27,6 @@ interface CategoryServiceInterface
     public function getActiveList(): array;
 
     /**
-     * Список всех категорий для админки.
-     *
-     * @return \yii\data\ActiveDataProvider
-     */
-    public function getAdminList(): \yii\data\ActiveDataProvider;
-
-    /**
      * @param CategoryDto $dto
      * @return Category
      */
