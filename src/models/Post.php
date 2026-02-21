@@ -72,7 +72,7 @@ class Post extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%blog_post}}';
+        return '{{%blog_new_posts}}';
     }
 
     /**
