@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Besnovatyj\BlogNew\controllers\backend;
 
+
 use Yii;
 use yii\base\Module;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
@@ -20,7 +20,7 @@ use Besnovatyj\BlogNew\forms\backend\search\CategorySearch;
 /**
  * Бэкенд-контроллер для управления категориями блога.
  */
-class CategoryController extends Controller
+class CategoryController extends \yii\web\Controller
 {
     /**
      * @param string $id ID контроллера
