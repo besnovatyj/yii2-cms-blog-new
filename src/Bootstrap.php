@@ -34,24 +34,24 @@ class Bootstrap implements BootstrapInterface
         // $app->on(Application::EVENT_BEFORE_REQUEST, function () {
             // остальной код
         //});
-
-        $app->getUrlManager()->addRules([
-            // Фронтенд: красивые URL для посетителей
-            'blog'                        => 'blog/post/index',
-            'blog/category/<slug:\w+>'    => 'blog/post/category',
-            'blog/<slug:[\w-]+>'          => 'blog/post/view',
-
-            // Бэкенд: CRUD-маршруты для постов
-            'blog/manage'                 => 'blog/post/index',
-            'blog/manage/create'          => 'blog/post/create',
-            'blog/manage/<id:\d+>/update' => 'blog/post/update',
-            'blog/manage/<id:\d+>/delete' => 'blog/post/delete',
-
-            // Бэкенд: CRUD-маршруты для категорий
-            'blog/manage/categories'                 => 'blog/category/index',
-            'blog/manage/categories/create'          => 'blog/category/create',
-            'blog/manage/categories/<id:\d+>/update' => 'blog/category/update',
-            'blog/manage/categories/<id:\d+>/delete' => 'blog/category/delete',
-        ], false);
+// TODO - по идее, когда объединю со старым, можно и красивые URL сделать, потому что на данный момент модуль выносим в пакет, а URL задаются в самом приложении `app/frontend/config/url-manager.php`
+//        $app->getUrlManager()->addRules([
+//            // Фронтенд: красивые URL для посетителей
+//            'BlogNew'                        => 'BlogNew/post/index',
+//            'BlogNew/category/<slug:\w+>'    => 'BlogNew/post/category',
+//            'BlogNew/<slug:[\w-]+>'          => 'BlogNew/post/view',
+//
+//            // Бэкенд: CRUD-маршруты для постов
+//            'BlogNew/manage'                 => 'BlogNew/post/index',
+//            'BlogNew/manage/create'          => 'BlogNew/post/create',
+//            'BlogNew/manage/<id:\d+>/update' => 'BlogNew/post/update',
+//            'BlogNew/manage/<id:\d+>/delete' => 'BlogNew/post/delete',
+//
+//            // Бэкенд: CRUD-маршруты для категорий
+//            'BlogNew/manage/categories'                 => 'BlogNew/category/index',
+//            'BlogNew/manage/categories/create'          => 'BlogNew/category/create',
+//            'BlogNew/manage/categories/<id:\d+>/update' => 'BlogNew/category/update',
+//            'BlogNew/manage/categories/<id:\d+>/delete' => 'BlogNew/category/delete',
+//        ], false);
     }
 }
