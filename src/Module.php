@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Besnovatyj\BlogNew;
 
-use Yii;
-use yii\base\Module as BaseModule;
-use Besnovatyj\BlogNew\contracts\PostRepositoryInterface;
 use Besnovatyj\BlogNew\contracts\CategoryRepositoryInterface;
-use Besnovatyj\BlogNew\contracts\PostServiceInterface;
 use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
-use Besnovatyj\BlogNew\repositories\PostRepository;
+use Besnovatyj\BlogNew\contracts\PostRepositoryInterface;
+use Besnovatyj\BlogNew\contracts\PostServiceInterface;
 use Besnovatyj\BlogNew\repositories\CategoryRepository;
-use Besnovatyj\BlogNew\services\PostService;
+use Besnovatyj\BlogNew\repositories\PostRepository;
 use Besnovatyj\BlogNew\services\CategoryService;
+use Besnovatyj\BlogNew\services\PostService;
+use common\components\module\BaseModule;
+use Yii;
 
 /**
  * Модуль блога.
@@ -40,12 +40,8 @@ use Besnovatyj\BlogNew\services\CategoryService;
  */
 class Module extends BaseModule
 {
-    /**
-     * Пространство имён контроллеров по умолчанию.
-     * Переопределяется в init() в зависимости от того,
-     * фронтенд это или бэкенд приложение.
-     */
-    public $controllerNamespace = 'Besnovatyj\BlogNew\controllers\frontend';
+    public const bool EDITABLE = true;
+    public const string VERSION = '1.0.0';
 
     /**
      * Инициализация модуля.
@@ -62,13 +58,33 @@ class Module extends BaseModule
 
         $this->registerDependencies();
         $this->registerTranslations();
-
-        // Определяем контекст приложения по его id.
-        // В advanced-шаблоне Yii2 id обычно 'app-backend' / 'app-frontend'.
-        if ($this->isBackendApp()) {
-            $this->controllerNamespace = 'Besnovatyj\BlogNew\controllers\backend';
-        }
     }
+
+    public static function getAdminMenu(): array
+    {
+        return require __DIR__ . '/config/adminMenu.php';
+    }
+
+    public static function getConfig(): array
+    {
+        return require __DIR__ . '/config/config.php';
+    }
+
+    public static function getOptions(): array
+    {
+        return require __DIR__ . '/config/options.php';
+    }
+
+    public static function getDependencies(): array
+    {
+        return require __DIR__ . '/config/dependencies.php';
+    }
+
+//  Класс `\Besnovatyj\BlogNew\Bootstrap::class;` добавляется загрузчиком Yii2 при установке модуля ( раздел `extra` в файле `composer.json`)
+//    public static function getBootstrap(): string|bool
+//    {
+//        return false; // \Besnovatyj\BlogNew\Bootstrap::class;
+//    }
 
     /**
      * Регистрация привязок интерфейсов к реализациям в DI-контейнере.
@@ -104,18 +120,13 @@ class Module extends BaseModule
     private function registerTranslations(): void
     {
         // TODO: Yii::$app->i18n->translations['blog*'] = [...]
+        if (!isset(Yii::$app->i18n->translations['BlogNew'])) {
+            Yii::$app->i18n->translations['BlogNew'] = [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'sourceLanguage' => 'en',
+                'basePath' => '@Besnovatyj/BlogNew/messages'
+            ];
+        }
     }
 
-    /**
-     * Проверяет, работаем ли мы в бэкенд-приложении.
-     *
-     * Вынесено в отдельный метод для:
-     * 1. Читаемости
-     * 2. Возможности переопределения в наследниках
-     * 3. Удобства тестирования (можно замокать)
-     */
-    private function isBackendApp(): bool
-    {
-        return Yii::$app->id === 'app-backend';
-    }
 }
