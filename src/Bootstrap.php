@@ -32,9 +32,11 @@ class Bootstrap implements BootstrapInterface
     {
 
         // $app->on(Application::EVENT_BEFORE_REQUEST, function () {
-            // остальной код
+        // остальной код
         //});
-// TODO - по идее, когда объединю со старым, можно и красивые URL сделать, потому что на данный момент модуль выносим в пакет, а URL задаются в самом приложении `app/frontend/config/url-manager.php`
+
+        // TODO - по идее, когда объединю со старым модулем блога, можно и это вернуть
+
 //        $app->getUrlManager()->addRules([
 //            // Фронтенд: красивые URL для посетителей
 //            'BlogNew'                        => 'BlogNew/post/index',
