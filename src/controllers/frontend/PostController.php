@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Besnovatyj\BlogNew\controllers\frontend;
 
+use Yii;
 use yii\base\Module;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -65,7 +66,12 @@ class PostController extends Controller
         try {
             $post = $this->postService->getPublishedBySlug($slug);
         } catch (PostNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         return $this->render('view', [
@@ -84,7 +90,12 @@ class PostController extends Controller
         try {
             $dataProvider = $this->postService->getPublishedByCategory($slug);
         } catch (CategoryNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         return $this->render('index', [

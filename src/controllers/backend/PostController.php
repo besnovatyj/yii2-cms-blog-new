@@ -9,6 +9,7 @@ use Yii;
 use yii\base\Module;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use Besnovatyj\BlogNew\contracts\PostServiceInterface;
@@ -128,7 +129,12 @@ class PostController extends \yii\web\Controller
             } catch (BlogModuleException $e) {
                 // Маппинг доменного исключения → пользовательское сообщение.
                 // Сервис не знает про flash-сообщения — это забота контроллера.
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                Yii::$app->errorHandler->logException($e);
+                if (YII_DEBUG) {
+                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
+                } else {
+                    Yii::$app->session->setFlash('error', 'Ошибка');
+                }
             }
         }
 
@@ -152,7 +158,12 @@ class PostController extends \yii\web\Controller
         } catch (PostNotFoundException $e) {
             // Маппинг: доменное исключение "не найден" → HTTP 404.
             // Это единственное место, где домен "касается" HTTP.
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         $form = new PostForm($post);
@@ -164,7 +175,12 @@ class PostController extends \yii\web\Controller
                 Yii::$app->session->setFlash('success', 'Пост успешно обновлён');
                 return $this->redirect(['index']);
             } catch (BlogModuleException $e) {
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                Yii::$app->errorHandler->logException($e);
+                if (YII_DEBUG) {
+                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
+                } else {
+                    Yii::$app->session->setFlash('error', 'Ошибка');
+                }
             }
         }
 
@@ -186,7 +202,12 @@ class PostController extends \yii\web\Controller
             $this->postService->delete($id);
             Yii::$app->session->setFlash('success', 'Пост удалён');
         } catch (PostNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         return $this->redirect(['index']);
@@ -207,7 +228,12 @@ class PostController extends \yii\web\Controller
             $this->postService->publish($id);
             Yii::$app->session->setFlash('success', 'Пост опубликован');
         } catch (PostNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         return $this->redirect(['index']);
@@ -225,7 +251,12 @@ class PostController extends \yii\web\Controller
             $this->postService->unpublish($id);
             Yii::$app->session->setFlash('success', 'Пост снят с публикации');
         } catch (PostNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         return $this->redirect(['index']);

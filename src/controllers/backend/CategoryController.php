@@ -9,6 +9,7 @@ use Yii;
 use yii\base\Module;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use Besnovatyj\BlogNew\contracts\CategoryServiceInterface;
@@ -89,7 +90,12 @@ class CategoryController extends \yii\web\Controller
                 Yii::$app->session->setFlash('success', 'Категория успешно создана');
                 return $this->redirect(['index']);
             } catch (BlogModuleException $e) {
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                Yii::$app->errorHandler->logException($e);
+                if (YII_DEBUG) {
+                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
+                } else {
+                    Yii::$app->session->setFlash('error', 'Ошибка');
+                }
             }
         }
 
@@ -109,7 +115,12 @@ class CategoryController extends \yii\web\Controller
         try {
             $category = $this->categoryService->getById($id);
         } catch (CategoryNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         $form = new CategoryForm($category);
@@ -121,7 +132,12 @@ class CategoryController extends \yii\web\Controller
                 Yii::$app->session->setFlash('success', 'Категория успешно обновлена');
                 return $this->redirect(['index']);
             } catch (BlogModuleException $e) {
-                Yii::$app->session->setFlash('error', $e->getMessage());
+                Yii::$app->errorHandler->logException($e);
+                if (YII_DEBUG) {
+                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
+                } else {
+                    Yii::$app->session->setFlash('error', 'Ошибка');
+                }
             }
         }
 
@@ -142,7 +158,12 @@ class CategoryController extends \yii\web\Controller
             $this->categoryService->delete($id);
             Yii::$app->session->setFlash('success', 'Категория удалена');
         } catch (CategoryNotFoundException $e) {
-            throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            Yii::$app->errorHandler->logException($e);
+            if (YII_DEBUG) {
+                throw new NotFoundHttpException($e->getMessage(), 0, $e);
+            } else {
+                throw new NotFoundHttpException('Страница не найдена', 0, $e);
+            }
         }
 
         return $this->redirect(['index']);
