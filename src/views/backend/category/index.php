@@ -2,7 +2,7 @@
 
 use Besnovatyj\BlogNew\forms\backend\search\CategorySearch;
 use yii\data\ActiveDataProvider;
-use yii\grid\ActionColumn;
+use backend\widgets\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use Besnovatyj\BlogNew\helpers\CategoryHelper;

@@ -12,7 +12,7 @@
 use Besnovatyj\BlogNew\forms\backend\search\PostSearch;
 use Besnovatyj\BlogNew\models\Category;
 use yii\data\ActiveDataProvider;
-use yii\grid\ActionColumn;
+use backend\widgets\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
