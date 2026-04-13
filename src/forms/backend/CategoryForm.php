@@ -6,6 +6,7 @@ namespace Besnovatyj\BlogNew\forms\backend;
 
 use Besnovatyj\BlogNew\dto\CategoryDto;
 use Besnovatyj\BlogNew\models\Category;
+use Besnovatyj\Forms\BaseForm;
 use yii\base\Model;
 
 /**
@@ -16,7 +17,7 @@ use yii\base\Model;
  * - Подписи полей для ActiveForm
  * - Конвертацию в DTO для передачи в сервисный слой
  */
-class CategoryForm extends Model
+class CategoryForm extends BaseForm
 {
     public ?string $title = null;
     public ?string $slug = null;

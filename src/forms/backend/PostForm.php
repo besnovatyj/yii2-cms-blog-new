@@ -7,6 +7,7 @@ namespace Besnovatyj\BlogNew\forms\backend;
 use Besnovatyj\BlogNew\dto\PostCreateDto;
 use Besnovatyj\BlogNew\dto\PostUpdateDto;
 use Besnovatyj\BlogNew\models\Post;
+use Besnovatyj\Forms\BaseForm;
 use yii\base\Model;
 
 /**
@@ -23,7 +24,7 @@ use yii\base\Model;
  *
  * @property-read bool $isUpdate
  */
-class PostForm extends Model
+class PostForm extends BaseForm
 {
     public ?string $title = null;
     public ?string $slug = null;
