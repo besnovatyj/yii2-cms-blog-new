@@ -23,6 +23,8 @@ use Besnovatyj\BlogNew\forms\backend\search\CategorySearch;
  */
 class CategoryController extends \yii\web\Controller
 {
+    use \common\components\controller\ControllerTrait;
+
     /**
      * @param string $id ID контроллера
      * @param Module $module Модуль-владелец
@@ -90,12 +92,7 @@ class CategoryController extends \yii\web\Controller
                 Yii::$app->session->setFlash('success', 'Категория успешно создана');
                 return $this->redirect(['index']);
             } catch (BlogModuleException $e) {
-                Yii::$app->errorHandler->logException($e);
-                if (YII_DEBUG) {
-                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
-                } else {
-                    Yii::$app->session->setFlash('error', 'Ошибка');
-                }
+                $this->handleDomainException($e, 'Ошибка');
             }
         }
 
@@ -132,12 +129,7 @@ class CategoryController extends \yii\web\Controller
                 Yii::$app->session->setFlash('success', 'Категория успешно обновлена');
                 return $this->redirect(['index']);
             } catch (BlogModuleException $e) {
-                Yii::$app->errorHandler->logException($e);
-                if (YII_DEBUG) {
-                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
-                } else {
-                    Yii::$app->session->setFlash('error', 'Ошибка');
-                }
+                $this->handleDomainException($e, 'Ошибка');
             }
         }
 

@@ -38,6 +38,8 @@ use Besnovatyj\BlogNew\forms\backend\search\PostSearch;
  */
 class PostController extends \yii\web\Controller
 {
+    use \common\components\controller\ControllerTrait;
+
     /**
      * @param string $id ID контроллера
      * @param Module $module Модуль-владелец
@@ -129,12 +131,7 @@ class PostController extends \yii\web\Controller
             } catch (BlogModuleException $e) {
                 // Маппинг доменного исключения → пользовательское сообщение.
                 // Сервис не знает про flash-сообщения — это забота контроллера.
-                Yii::$app->errorHandler->logException($e);
-                if (YII_DEBUG) {
-                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
-                } else {
-                    Yii::$app->session->setFlash('error', 'Ошибка');
-                }
+                $this->handleDomainException($e, 'Ошибка');
             }
         }
 
@@ -175,12 +172,7 @@ class PostController extends \yii\web\Controller
                 Yii::$app->session->setFlash('success', 'Пост успешно обновлён');
                 return $this->redirect(['index']);
             } catch (BlogModuleException $e) {
-                Yii::$app->errorHandler->logException($e);
-                if (YII_DEBUG) {
-                    Yii::$app->session->setFlash('error', VarDumper::dumpAsString($e->getMessage()));
-                } else {
-                    Yii::$app->session->setFlash('error', 'Ошибка');
-                }
+                $this->handleDomainException($e, 'Ошибка');
             }
         }
 

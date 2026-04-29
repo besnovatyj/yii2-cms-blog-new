@@ -56,7 +56,7 @@ class Module extends BaseModule
     {
         parent::init();
 
-        // TODO - у нас в BaseModule есть работа с методом `getContainerConfig()` в `init()`
+        // TODO - `setContainerConfig()`
         $this->registerDependencies();
         $this->registerTranslations();
     }
@@ -88,7 +88,7 @@ class Module extends BaseModule
 //    }
 
     /**
-     * TODO - у нас в BaseModule есть работа с методом `getContainerConfig()` в `init()`
+     * TODO - `setContainerConfig()`
      * Регистрация привязок интерфейсов к реализациям в DI-контейнере.
      *
      * Это ключевой момент для соблюдения DIP (Dependency Inversion Principle):
