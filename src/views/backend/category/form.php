@@ -1,5 +1,10 @@
 <?php
 
+
+/*
+ * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
+ */
+
 use Besnovatyj\BlogNew\forms\backend\CategoryForm;
 use yii\helpers\Html;
 use yii\web\View;

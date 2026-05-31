@@ -1,5 +1,10 @@
 <?php
 
+
+/*
+ * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
+ */
+
 use Besnovatyj\BlogNew\forms\backend\search\CategorySearch;
 use yii\data\ActiveDataProvider;
 use Besnovatyj\Backend\Widgets\grid\ActionColumn;
