@@ -14,7 +14,8 @@
   "extra": {
     "moduleClass": "Besnovatyj\\BlogNew\\Module",
     "moduleId": "BlogNew",
-    "bootstrap": "Besnovatyj\\BlogNew\\Bootstrap"
+    "bootstrap": "Besnovatyj\\BlogNew\\Bootstrap",
+    "bescms": { "kind": "module" }
   },
   "keywords": [
     "yii2",

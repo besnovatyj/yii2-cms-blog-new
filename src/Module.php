@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * Copyright (c) 2026 Besnovatyj. Licensed under the MIT License.
  */
@@ -17,7 +16,13 @@ use Besnovatyj\BlogNew\repositories\CategoryRepository;
 use Besnovatyj\BlogNew\repositories\PostRepository;
 use Besnovatyj\BlogNew\services\CategoryService;
 use Besnovatyj\BlogNew\services\PostService;
-use common\components\module\BaseModule;
+use common\components\module\CmsModule;
+use modules\modmanNew\contract\DeclaresModule;
+use modules\modmanNew\contract\ProvidesAdminMenu;
+use modules\modmanNew\contract\ProvidesDependencies;
+use modules\modmanNew\contract\ProvidesDirectories;
+use modules\modmanNew\contract\ProvidesMigrations;
+use modules\modmanNew\contract\ProvidesOptions;
 use Yii;
 
 /**
@@ -43,10 +48,13 @@ use Yii;
  *
  * @property-read string $controllerNamespace
  */
-class Module extends BaseModule
+class Module  extends CmsModule  implements
+    DeclaresModule, ProvidesAdminMenu, ProvidesDependencies,
+    ProvidesDirectories, ProvidesMigrations, ProvidesOptions
 {
     public const bool EDITABLE = true;
     public const string VERSION = '1.0.0';
+    public const string MODULE_ID = 'BlogNew';
 
     /**
      * Инициализация модуля.
@@ -66,34 +74,20 @@ class Module extends BaseModule
         $this->registerTranslations();
     }
 
-    public static function getAdminMenu(): array
-    {
-        return require __DIR__ . '/config/adminMenu.php';
-    }
+    public static function moduleId(): string { return self::MODULE_ID; }
+    public static function moduleVersion(): string { return self::VERSION; }
+    public static function isEditable(): bool { return self::EDITABLE; }
+    public static function adminMenu(): array { return require __DIR__.'/config/adminMenu.php'; }
+    public static function moduleConfig(): array { return require __DIR__.'/config/config.php'; }
+    public static function options(): array { return require __DIR__.'/config/options.php'; }
+    public static function dependencies(): array { return require __DIR__.'/config/dependencies.php'; }
+    public static function migrationPath(): string { return __DIR__.'/migrations'; }
+    public static function migrationNamespace(): ?string { return __NAMESPACE__.'\\migrations'; }
+    public static function directories(): array { return ['@static/origin/BlogNew','@static/cache/BlogNew'];}
 
-    public static function getConfig(): array
-    {
-        return require __DIR__ . '/config/config.php';
-    }
-
-    public static function getOptions(): array
-    {
-        return require __DIR__ . '/config/options.php';
-    }
-
-    public static function getDependencies(): array
-    {
-        return require __DIR__ . '/config/dependencies.php';
-    }
-
-//  Класс `\Besnovatyj\BlogNew\Bootstrap::class;` добавляется загрузчиком Yii2 при установке модуля ( раздел `extra` в файле `composer.json`)
-//    public static function getBootstrap(): string|bool
-//    {
-//        return false; // \Besnovatyj\BlogNew\Bootstrap::class;
-//    }
 
     /**
-     * TODO - `setContainerConfig()`
+     * TODO - `config/container.php`
      * Регистрация привязок интерфейсов к реализациям в DI-контейнере.
      *
      * Это ключевой момент для соблюдения DIP (Dependency Inversion Principle):
@@ -135,5 +129,4 @@ class Module extends BaseModule
             ];
         }
     }
-
 }
