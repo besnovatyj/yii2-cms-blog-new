@@ -17,12 +17,12 @@ use Besnovatyj\BlogNew\repositories\PostRepository;
 use Besnovatyj\BlogNew\services\CategoryService;
 use Besnovatyj\BlogNew\services\PostService;
 use common\components\module\CmsModule;
-use modules\modman\contract\DeclaresModule;
-use modules\modman\contract\ProvidesAdminMenu;
-use modules\modman\contract\ProvidesDependencies;
-use modules\modman\contract\ProvidesDirectories;
-use modules\modman\contract\ProvidesMigrations;
-use modules\modman\contract\ProvidesOptions;
+use Besnovatyj\Contracts\module\DeclaresModule;
+use Besnovatyj\Contracts\module\ProvidesAdminMenu;
+use Besnovatyj\Contracts\module\ProvidesDependencies;
+use Besnovatyj\Contracts\module\ProvidesDirectories;
+use Besnovatyj\Contracts\module\ProvidesMigrations;
+use Besnovatyj\Contracts\module\ProvidesOptions;
 use Yii;
 
 /**
