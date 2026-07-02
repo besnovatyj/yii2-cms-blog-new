@@ -7,7 +7,7 @@
 
 namespace Besnovatyj\BlogNew\migrations;
 
-use common\components\migration\BaseMigration;
+use Besnovatyj\Kernel\migration\BaseMigration;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\db\Exception;

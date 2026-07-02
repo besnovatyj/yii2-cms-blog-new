@@ -16,7 +16,7 @@ use Besnovatyj\BlogNew\repositories\CategoryRepository;
 use Besnovatyj\BlogNew\repositories\PostRepository;
 use Besnovatyj\BlogNew\services\CategoryService;
 use Besnovatyj\BlogNew\services\PostService;
-use common\components\module\CmsModule;
+use Besnovatyj\Kernel\module\CmsModule;
 use Besnovatyj\Contracts\module\DeclaresModule;
 use Besnovatyj\Contracts\module\ProvidesAdminMenu;
 use Besnovatyj\Contracts\module\ProvidesDependencies;
