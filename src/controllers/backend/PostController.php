@@ -43,7 +43,7 @@ use Besnovatyj\BlogNew\forms\backend\search\PostSearch;
  */
 class PostController extends \yii\web\Controller
 {
-    use \common\components\controller\ControllerTrait;
+    use \Besnovatyj\Kernel\controller\ControllerTrait;
 
     /**
      * @param string $id ID контроллера
