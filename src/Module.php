@@ -19,6 +19,7 @@ use Besnovatyj\BlogNew\services\PostService;
 use Besnovatyj\Kernel\module\CmsModule;
 use Besnovatyj\Contracts\module\DeclaresModule;
 use Besnovatyj\Contracts\module\ProvidesAdminMenu;
+use Besnovatyj\Contracts\module\ProvidesBootstrap;
 use Besnovatyj\Contracts\module\ProvidesDependencies;
 use Besnovatyj\Contracts\module\ProvidesDirectories;
 use Besnovatyj\Contracts\module\ProvidesMigrations;
@@ -42,14 +43,15 @@ use Yii;
  * ],
  * ```
  *
- * URL-правила регистрируются в Bootstrap (через composer.json extra.bootstrap).
+ * URL-правила регистрируются в Bootstrap (L2: вклад 'bootstrap' в config-plugin `common` —
+ * выполняется только у активного модуля, гейт modman).
  * DI-привязки регистрируются здесь в init() — только когда модуль создаётся
  * (т.е. URL матчится на маршрут блога). Это lazy loading.
  *
  * @property-read string $controllerNamespace
  */
 class Module  extends CmsModule  implements
-    DeclaresModule, ProvidesAdminMenu, ProvidesDependencies,
+    DeclaresModule, ProvidesAdminMenu, ProvidesBootstrap, ProvidesDependencies,
     ProvidesDirectories, ProvidesMigrations, ProvidesOptions
 {
     public const bool EDITABLE = true;
@@ -84,6 +86,7 @@ class Module  extends CmsModule  implements
     public static function migrationPath(): string { return __DIR__.'/migrations'; }
     public static function migrationNamespace(): ?string { return __NAMESPACE__.'\\migrations'; }
     public static function directories(): array { return ['@static/origin/BlogNew','@static/cache/BlogNew'];}
+    public static function bootstrapClasses(): array { return [Bootstrap::class]; }
 
 
     /**
