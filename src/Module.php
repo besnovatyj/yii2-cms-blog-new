@@ -18,7 +18,6 @@ use Besnovatyj\BlogNew\services\CategoryService;
 use Besnovatyj\BlogNew\services\PostService;
 use Besnovatyj\Kernel\module\CmsModule;
 use Besnovatyj\Contracts\module\DeclaresModule;
-use Besnovatyj\Contracts\module\ProvidesAdminMenu;
 use Besnovatyj\Contracts\module\ProvidesBootstrap;
 use Besnovatyj\Contracts\module\ProvidesDependencies;
 use Besnovatyj\Contracts\module\ProvidesDirectories;
@@ -51,7 +50,7 @@ use Yii;
  * @property-read string $controllerNamespace
  */
 class Module  extends CmsModule  implements
-    DeclaresModule, ProvidesAdminMenu, ProvidesBootstrap, ProvidesDependencies,
+    DeclaresModule, ProvidesBootstrap, ProvidesDependencies,
     ProvidesDirectories, ProvidesMigrations, ProvidesOptions
 {
     public const bool EDITABLE = true;
@@ -79,7 +78,6 @@ class Module  extends CmsModule  implements
     public static function moduleId(): string { return self::MODULE_ID; }
     public static function moduleVersion(): string { return self::VERSION; }
     public static function isEditable(): bool { return self::EDITABLE; }
-    public static function adminMenu(): array { return require __DIR__.'/config/adminMenu.php'; }
     public static function moduleConfig(): array { return require __DIR__.'/config/config.php'; }
     public static function options(): array { return require __DIR__.'/config/options.php'; }
     public static function dependencies(): array { return require __DIR__.'/config/dependencies.php'; }
